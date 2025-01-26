@@ -96,7 +96,7 @@ def upload_file(request):
 
         if document_corpus:
             fit_vectorizer()
-            message = "Files uploaded and processed successfully!"
+            message = "File uploaded successfully."
         else:
             message = "No text extracted from files."
     else:
