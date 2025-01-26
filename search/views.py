@@ -23,8 +23,8 @@ stopwords_list = set(stopwords.words("english"))
 lemmer = WordNetLemmatizer()
 UPLOAD_FOLDER = "uploaded_files"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-corpus = []
-document_paths = []
+document_corpus = []
+uploaded_document_paths = []
 vectorizer = TfidfVectorizer(analyzer="word", ngram_range=(1, 2), max_features=10000)
 
 def preprocess_text(text):
@@ -57,15 +57,15 @@ def extract_text_from_docx(file):
         return ""
 
 def fit_vectorizer():
-    """Fit the TF-IDF vectorizer with the current corpus."""
-    if corpus:
-        vectorizer.fit(corpus)
+    """Fit the TF-IDF vectorizer with the current document corpus."""
+    if document_corpus:
+        vectorizer.fit(document_corpus)
     else:
-        print("Corpus is empty. TF-IDF vectorizer not fitted.")
+        print("Document corpus is empty. TF-IDF vectorizer not fitted.")
 
 def upload_file(request):
     """Handle file uploads and process the uploaded documents."""
-    global corpus, document_paths
+    global document_corpus, uploaded_document_paths
 
     if request.method == 'POST' and 'document' in request.FILES:
         files = request.FILES.getlist("document")
@@ -89,12 +89,12 @@ def upload_file(request):
 
             if text.strip():
                 preprocessed_text = preprocess_text(text)
-                corpus.append(preprocessed_text)
-                document_paths.append(file_path)
+                document_corpus.append(preprocessed_text)
+                uploaded_document_paths.append(file_path)
             else:
                 print(f"Failed to extract text from file: {filename}")
 
-        if corpus:
+        if document_corpus:
             fit_vectorizer()
             message = "Files uploaded and processed successfully!"
         else:
@@ -120,7 +120,7 @@ def search(request):
         results = []
         word_window = 5
 
-        for doc in corpus:
+        for doc in document_corpus:
             sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|!)\s', doc)
             sentences_clean = [preprocess_text(sentence) for sentence in sentences]
 
