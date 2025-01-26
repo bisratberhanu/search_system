@@ -7,6 +7,7 @@ It is built using the Python Django framework.
 Demo photo:
 ![alt text](image.png)
 
+### Demo video found  [here](https://youtu.be/-MMufrR60Zg)
 
 ## How to Run the Project
 
