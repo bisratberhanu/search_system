@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search System from PDF and Word Files</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #77aaff 3px solid;
+        }
+        header h1 {
+            text-align: center;
+            text-transform: uppercase;
+            margin: 0;
+            font-size: 24px;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        form input[type="file"],
+        form input[type="text"],
+        form input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        form button {
+            display: block;
+            width: 100%;
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background: #555;
+        }
+        .message {
+            color: green;
+            text-align: center;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        .uploaded-files,
+        .results {
+            background: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .uploaded-files ul {
+            list-style: none;
+            padding: 0;
+        }
+        .uploaded-files li {
+            background: #f4f4f4;
+            margin: 5px 0;
+            padding: 10px;
+            border: #ccc 1px solid;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card h3 {
+            margin: 0 0 10px;
+        }
+        .card p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Search System from PDF and Word Files</h1>
+    </header>
+    <div class="container">
+        <h2>Upload a Document</h2>
+        <form method="POST" action="{% url 'upload_file' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="document">Select PDF or DOCX File:</label>
+            <input type="file" name="document" required multiple><br><br>
+            
+            <button type="submit">Upload Document</button>
+        </form>
+
+        {% if message %}
+            <h3 class="message">{{ message }}</h3>
+        {% endif %}
+
+        <div class="uploaded-files">
+            <h2>Uploaded Files</h2>
+            <ul>
+                {% for file in uploaded_files %}
+                    <li>{{ file }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <h2>Search for Similarity</h2>
+        <form method="POST" action="{% url 'search' %}">
+            {% csrf_token %}
+            <label for="query">Query:</label>
+            <input type="text" name="query" required><br><br>
+            
+            <label for="top_n">Number of Results (Default is 5):</label>
+            <input type="number" name="top_n" min="1" value="5"><br><br>
+            
+            <button type="submit">Search</button>
+        </form>
+
+        {% if results %}
+        <div class="results">
+            <h2>Similarity Results</h2>
+            {% for result in results %}
+            <div class="card">
+                <h3>Similarity Score: {{ result.similarity }}</h3>
+                <p>{{ result.sentence }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <h3 class="error">{{ error }}</h3>
+        {% endif %}
+    </div>
+</body>
+</html>
