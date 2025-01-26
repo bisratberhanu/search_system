@@ -4,6 +4,10 @@ This repository is a search system that can accept multiple PDFs or Word documen
 
 It is built using the Python Django framework.
 
+Demo photo:
+![alt text](image.png)
+
+
 ## How to Run the Project
 
 1. **Clone the repository:**
@@ -35,6 +39,3 @@ It is built using the Python Django framework.
 - Upload multiple PDF or DOCX files.
 - Search for a specific word or phrase in the uploaded documents.
 - Return sentences that are similar to the search query along with their similarity scores.
-
-Demo photo:
-![Demo](demo.png)
